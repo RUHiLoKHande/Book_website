@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Saptshee Books</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            padding-top: 60px;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+            padding: 10px 20px;
+            /* border-bottom: 1px solid #ccc; */ /* Removed this line */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            animation: fadeInDown 0.5s ease-out;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            color: darkred;
+            font-weight: bold;
+            margin: 0;
+            transition: color 0.3s ease;
+        }
+
+        .logo span {
+            font-weight: normal;
+            color: black;
+        }
+
+        .search-bar {
+            width: 400px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-right: none;
+            border-radius: 4px 0 0 4px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-bar:focus {
+            border-color: darkred;
+        }
+
+        .search-btn {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-left: none;
+            background-color: #eee;
+            cursor: pointer;
+            border-radius: 0 4px 4px 0;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-btn:hover {
+            background-color: #ddd;
+        }
+
+        .navbar-right a,
+        .navbar-right span {
+            margin-right: 35px;
+            text-decoration: none;
+            color: #000;
+            transition: color 0.3s ease;
+            font-size: 14px;
+        }
+
+        .navbar-right a:hover,
+        .sign-in:hover {
+            color: darkred;
+        }
+
+        .btn-create {
+            background-color: darkred;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            margin-right: 30px;
+            border-radius: 10px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-create:hover {
+            background-color: #a30000;
+            transform: scale(1.05);
+        }
+
+        .sign-in {
+            color: darkred;
+            text-decoration: underline;
+        }
+
+        .search-suggestions {
+            position: absolute;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-top: none;
+            width: 416px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 10;
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .suggestion-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .suggestion-item:hover {
+            background-color: #f5f5f5;
+        }
+
+        .search-bar:focus + .search-suggestions,
+        .search-suggestions:hover {
+            display: block;
+        }
+
+        /* Categories */
+        .categories {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            padding: 10px 20px;
+            background-color: #fafafa;
+            border-bottom: 1px solid #ddd;
+            animation: fadeIn 0.5s ease-out 0.2s backwards;
+        }
+
+        .categories a,
+        .dropbtn {
+            text-decoration: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 6px 10px;
+            transition: color 0.3s ease;
+            white-space: nowrap; /* Prevents text wrapping */
+        }
+
+        .categories a:hover,
+        .dropbtn:hover {
+            color: darkred;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            min-width: 250px;
+            box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+            z-index: 1;
+            flex-direction: column;
+            border: 1px solid #ccc;
+            border-top: none;
+            animation: fadeIn 0.3s ease-out;
+            left: 0; /* Aligns dropdown directly under the button */
+        }
+
+        .dropdown-content a {
+            padding: 10px 15px;
+            display: block;
+            color: #000;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.3s ease;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f5f5f5;
+        }
+
+        /* Hero Section */
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #e0e5e3a7;
+            padding: 40px 60px;
+            flex-wrap: wrap;
+            margin: 30px auto;
+            max-width: 1200px;
+            border-radius: 8px;
+            gap: 40px;
+            height: 400px;
+            animation: fadeIn 0.7s ease-out;
+        }
+
+        .hero-image {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+            min-width: 300px;
+            animation: slideIn 0.7s ease-out;
+        }
+
+        .hero-image img {
+            max-width: 100%;
+            width: 500px;
+            height: auto;
+            border-radius: 6px;
+            object-fit: contain;
+            height: 400px;
+            transition: transform 0.3s ease;
+        }
+
+        .hero-image img:hover {
+            transform: scale(1.02);
+        }
+
+        .hero-content {
+            max-width: 500px;
+            flex: 1;
+            min-width: 300px;
+            animation: slideIn 0.7s ease-out 0.2s backwards;
+        }
+
+        .hero-content h2 {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            color: #111;
+            transition: color 0.3s ease;
+        }
+
+        .hero-content h2:hover {
+            color: darkred;
+        }
+
+        .hero-content p {
+            font-size: 1.1rem;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .hero-btn {
+            display: inline-block;
+            background-color: #000;
+            color: #fff;
+            padding: 12px 20px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 3px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .hero-btn:hover {
+            background-color: #333;
+            transform: scale(1.05);
+        }
+
+        /* Search Results and Category Books Sections */
+        .search-results,
+        .category-books {
+            padding: 40px 60px;
+            background-color: transparent;
+            max-width: 1200px;
+            margin: 30px auto;
+            position: relative;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .search-results h2,
+        .category-books h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .search-results p,
+        .category-books p {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            cursor: pointer;
+            color: #000;
+            background: none;
+            border: none;
+            transition: color 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: darkred;
+        }
+
+        /* Book Sections */
+        .best-sellers {
+            padding: 40px 60px;
+            background-color: transparent;
+            max-width: 1200px;
+            margin: 30px auto;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .best-sellers h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .carousel-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .carousel {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            padding-bottom: 10px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .carousel::-webkit-scrollbar {
+            display: none;
+        }
+
+        .book-card {
+            min-width: 180px;
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+            text-align: center;
+            flex-shrink: 0;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        .book-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .book-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 5px;
+            transition: transform 0.3s ease;
+        }
+
+        .book-card img:hover {
+            transform: scale(1.05);
+        }
+
+        .book-card h4 {
+            font-size: 16px;
+            margin: 8px 0 4px;
+        }
+
+        .book-card p {
+            margin: 0;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .book-card .rating {
+            color: #000;
+            font-size: 13px;
+            margin: 6px 0;
+        }
+
+        .book-card .price {
+            font-weight: bold;
+            font-size: 15px;
+            color: darkgreen;
+        }
+
+        .book-card .read-now-btn,
+        .book-card .play-now-btn {
+            display: inline-block;
+            padding: 8px 12px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 3px;
+            margin-top: 8px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .book-card .read-now-btn {
+            background-color: darkred;
+            color: #fff;
+        }
+
+        .book-card .read-now-btn:hover {
+            background-color: #a30000;
+            transform: scale(1.05);
+        }
+
+        .book-card .play-now-btn {
+            background-color: #0066cc;
+            color: #fff;
+        }
+
+        .book-card .play-now-btn:hover {
+            background-color: #004c99;
+            transform: scale(1.05);
+        }
+
+        .library-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #333;
+            font-size: 2.5rem;
+            cursor: pointer;
+            z-index: 2;
+            padding: 0 10px;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            opacity: 0.3;
+        }
+
+        .carousel-btn.left {
+            left: 0;
+        }
+
+        .carousel-btn.right {
+            right: 0;
+        }
+
+        .carousel-btn:hover {
+            opacity: 1;
+            transform: scale(1.2);
+            color: darkred;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #f9f9f9;
+            border-top: 1px solid #ddd;
+            padding: 20px 0;
+            color: #333;
+            font-size: 14px;
+            animation: fadeIn 0.5s ease-out 0.4s backwards;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 60px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 40px;
+        }
+
+        .footer-section h3 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: #111;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section h3:hover {
+            color: darkred;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section ul li a {
+            text-decoration: none;
+            color: #333;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section ul li a:hover {
+            color: darkred;
+        }
+
+        /* User Dropdown */
+        .user-dropdown {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            margin-left: 15px;
+        }
+
+        .user-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        .user-dropdown .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 4px;
+        }
+
+        .user-dropdown .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .user-dropdown .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .user-dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* Responsive */
+        @media screen and (max-width: 768px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                height: auto;
+                padding: 20px;
+            }
+
+            .hero-image {
+                margin-bottom: 20px;
+            }
+
+            .hero-image img {
+                width: 100%;
+                max-width: 400px;
+            }
+
+            .hero-content {
+                margin-top: 0;
+            }
+
+            .navbar {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .navbar-center {
+                display: flex;
+                justify-content: center;
+                margin: 10px 0;
+                position: relative;
+            }
+
+            .search-bar {
+                width: 80%;
+            }
+
+            .search-suggestions {
+                width: calc(80% + 16px);
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-section {
+                margin-bottom: 20px;
+            }
+
+            .categories {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .dropdown-content {
+                position: static;
+                width: 100%;
+                box-shadow: none;
+                border: none;
+                background-color: #fafafa;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <header class="navbar">
+        <div class="navbar-left">
+            <a href="{{ url_for('index') }}"><h1 class="logo">Saptshee <span>Books</span></h1></a>
+        </div>
+        <div class="navbar-center">
+            <div class="search-container">
+                <input type="text" id="search-bar" placeholder="Search on Saptshee Books..." class="search-bar" autocomplete="off">
+                <div id="search-suggestions" class="search-suggestions"></div>
+                <button class="search-btn" onclick="performFullSearch()">🔍</button>
+            </div>
+        </div>
+        <div class="navbar-right">
+            <a href="#">Wishlist</a>
+            <a href="{{ url_for('my_library') }}">My Library</a>
+            {% if 'user' in session %}
+                <div class="user-dropdown">
+                    <img src="{{ session.user.get('avatar', 'https://via.placeholder.com/30') }}" alt="User" class="user-avatar">
+                    <span>{{ session.user.name }}</span>
+                    <div class="dropdown-content">
+                        <a href="{{ url_for('my_library') }}">My Library</a>
+                        <a href="{{ url_for('logout') }}">Logout</a>
+                    </div>
+                </div>
+            {% else %}
+                <button class="btn-create" onclick="window.location.href='{{ url_for('register') }}'">Create account</button>
+                <span>Have an account? <a href="{{ url_for('login') }}" class="sign-in">Sign in</a></span>
+            {% endif %}
+        </div>
+    </header>
+
+    <!-- Categories Menu -->
+    <nav class="categories">
+        <div class="dropdown">
+            <button class="dropbtn">eBooks ▾</button>
+            <div class="dropdown-content">
+                <a href="#" onclick="filterCategory('Young Adult - YA')">Young Adult - YA</a>
+                <a href="#" onclick="filterCategory('Science Fiction & Fantasy')">Science Fiction & Fantasy</a>
+                <a href="#" onclick="filterCategory('Biography & Memoir')">Biography & Memoir</a>
+                <a href="#" onclick="filterCategory('Business & Finance')">Business & Finance</a>
+                <a href="#" onclick="filterCategory('Nonfiction')">Nonfiction</a>
+                <a href="#" onclick="filterCategory('Mystery & Suspense')">Mystery & Suspense</a>
+                <a href="#" onclick="filterCategory('Comics & Manga')">Comics & Manga</a>
+                <a href="#" onclick="filterCategory('Kids')">Kids</a>
+                <a href="#" onclick="filterCategory('Romance')">Romance</a>
+                <a href="#" onclick="filterCategory('Fiction & Literature')">Fiction & Literature</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <button class="dropbtn">Audiobooks ▾</button>
+            <div class="dropdown-content">
+                <a href="#" onclick="filterCategory('Young Adult - YA')">Young Adult - YA</a>
+                <a href="#" onclick="filterCategory('Science Fiction & Fantasy')">Science Fiction & Fantasy</a>
+                <a href="#" onclick="filterCategory('Biography & Memoir')">Biography & Memoir</a>
+                <a href="#" onclick="filterCategory('Business & Finance')">Business & Finance</a>
+                <a href="#" onclick="filterCategory('Nonfiction')">Nonfiction</a>
+                <a href="#" onclick="filterCategory('Mystery & Suspense')">Mystery & Suspense</a>
+                <a href="#" onclick="filterCategory('Kids')">Kids</a>
+                <a href="#" onclick="filterCategory('Romance')">Romance</a>
+                <a href="#" onclick="filterCategory('Fiction & Literature')">Fiction & Literature</a>
+            </div>
+        </div>
+        <a href="#" onclick="filterCategory('Educational Books')">Educational Books</a>
+        <a href="#" onclick="filterCategory('eReaders & Apps')">eReaders & Apps</a>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-image">
+            <img src="{{ url_for('static', filename='img/hero.png') }}" alt="eReading Devices">
+        </div>
+        <div class="hero-content">
+            <h2>Read or listen anywhere, any time, on any device</h2>
+            <p>Your next read or audiobook awaits with a Sapatshree eReader, the Sapatshree Books App, or the Web Reader.</p>
+            <a href="#" class="hero-btn">Why eReading?</a>
+        </div>
+    </section>
+
+    <!-- Search Results Section -->
+    {% if search_term %}
+    <section class="search-results">
+        <h2>Search Results for "{{ search_term }}"</h2>
+        {% if search_results %}
+        <div class="carousel-container">
+            <div class="carousel" id="carousel-search">
+                {% for book in search_results %}
+                <div class="book-card">
+                    <a href="{{ url_for('book_detail', book_id=book.id) }}" style="text-decoration: none;">
+                        <img src="{{ book.image }}" alt="{{ book.title }}">
+                        <h4>{{ book.title }}</h4>
+                        <p>{{ book.author }}</p>
+                        <div class="rating">
+                            {% for i in range(5) %}
+                                {% if i < book.rating %}★{% else %}☆{% endif %}
+                            {% endfor %} ({{ book.rating_count }})
+                        </div>
+                        <p class="price">₹{{ book.price }}</p>
+                    </a>
+                    {% if book.id in session.get('library', []) %}
+                        <span class="library-badge">In Library</span>
+                    {% endif %}
+                    {% if book.category == 'audiobook' %}
+                        <a href="{{ url_for('book_detail', book_id=book.id) }}" class="play-now-btn">Play Now</a>
+                    {% else %}
+                        <a href="{{ url_for('book_detail', book_id=book.id) }}" class="read-now-btn">Read Now</a>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            <button class="carousel-btn left" onclick="scrollCarousel('carousel-search', -1)">←</button>
+            <button class="carousel-btn right" onclick="scrollCarousel('carousel-search', 1)">→</button>
+        </div>
+        {% else %}
+        <p>No search results found for "{{ search_term }}".</p>
+        {% endif %}
+    </section>
+    {% endif %}
+
+    <!-- Category Filter Section -->
+    {% if selected_category %}
+    <section class="category-books" id="category-section">
+        <button class="close-btn" onclick="window.location.href='/'">×</button>
+        <h2>Books in {{ selected_category }}</h2>
+        {% if filtered_books %}
+        <div class="carousel-container">
+            <div class="carousel" id="carousel-category">
+                {% for book in filtered_books %}
+                <div class="book-card">
+                    <a href="{{ url_for('book_detail', book_id=book.id) }}" style="text-decoration: none;">
+                        <img src="{{ book.image }}" alt="{{ book.title }}">
+                        <h4>{{ book.title }}</h4>
+                        <p>{{ book.author }}</p>
+                        <div class="rating">
+                            {% for i in range(5) %}
+                                {% if i < book.rating %}★{% else %}☆{% endif %}
+                            {% endfor %} ({{ book.rating_count }})
+                        </div>
+                        <p class="price">₹{{ book.price }}</p>
+                    </a>
+                    {% if book.id in session.get('library', []) %}
+                        <span class="library-badge">In Library</span>
+                    {% endif %}
+                    {% if book.category == 'audiobook' %}
+                        <a href="{{ url_for('book_detail', book_id=book.id) }}" class="play-now-btn">Play Now</a>
+                    {% else %}
+                        <a href="{{ url_for('book_detail', book_id=book.id) }}" class="read-now-btn">Read Now</a>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            <button class="carousel-btn left" onclick="scrollCarousel('carousel-category', -1)">←</button>
+            <button class="carousel-btn right" onclick="scrollCarousel('carousel-category', 1)">→</button>
+        </div>
+        {% else %}
+        <p>No books found in {{ selected_category }}.</p>
+        {% endif %}
+    </section>
+    {% endif %}
+
+    <!-- Best Sellers Section -->
+    <section class="best-sellers">
+        <h2>Our best-sellers</h2>
+        {% set bestseller_books = books | selectattr('category', 'equalto', 'bestseller') | list %}
+        {% if bestseller_books %}
+        <div class="carousel-container">
+            <div class="carousel" id="carousel-bestsellers">
+                {% for book in bestseller_books %}
+                <div class="book-card">
+                    <a href="{{ url_for('book_detail', book_id=book.id) }}" style="text-decoration: none;">
+                        <img src="{{ book.image }}" alt="{{ book.title }}">
+                        <h4>{{ book.title }}</h4>
+                        <p>{{ book.author }}</p>
+                        <div class="rating">
+                            {% for i in range(5) %}
+                                {% if i < book.rating %}★{% else %}☆{% endif %}
+                            {% endfor %} ({{ book.rating_count }})
+                        </div>
+                        <p class="price">₹{{ book.price }}</p>
+                    </a>
+                    {% if book.id in session.get('library', []) %}
+                        <span class="library-badge">In Library</span>
+                    {% endif %}
+                    {% if book.category == 'audiobook' %}
+                        <a href="{{ url_for('book_detail', book_id=book.id) }}" class="play-now-btn">Play Now</a>
+                    {% else %}
+                        <a href="{{ url_for('book_detail', book_id=book.id) }}" class="read-now-btn">Read Now</a>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            <button class="carousel-btn left" onclick="scrollCarousel('carousel-bestsellers', -1)">←</button>
+            <button class="carousel-btn right" onclick="scrollCarousel('carousel-bestsellers', 1)">→</button>
+        </div>
+        {% else %}
+        <p>No bestsellers available at the moment.</p>
+        {% endif %}
+    </section>
+
+    <!-- Popular in Hindi Section -->
+    <section class="best-sellers">
+        <h2>Popular in Hindi</h2>
+        {% set hindi_books = books | selectattr('category', 'equalto', 'hindi') | list %}
+        {% if hindi_books %}
+        <div class="carousel-container">
+            <div class="carousel" id="carousel-hindi">
+                {% for book in hindi_books %}
+                <div class="book-card">
+                    <a href="{{ url_for('book_detail', book_id=book.id) }}" style="text-decoration: none;">
+                        <img src="{{ book.image }}" alt="{{ book.title }}">
+                        <h4>{{ book.title }}</h4>
+                        <p>{{ book.author }}</p>
+                        <div class="rating">
+                            {% for i in range(5) %}
+                                {% if i < book.rating %}★{% else %}☆{% endif %}
+                            {% endfor %} ({{ book.rating_count }})
+                        </div>
+                        <p class="price">₹{{ book.price }}</p>
+                    </a>
+                    {% if book.id in session.get('library', []) %}
+                        <span class="library-badge">In Library</span>
+                    {% endif %}
+                    {% if book.category == 'audiobook' %}
+                        <a href="{{ url_for('book_detail', book_id=book.id) }}" class="play-now-btn">Play Now</a>
+                    {% else %}
+                        <a href="{{ url_for('book_detail', book_id=book.id) }}" class="read-now-btn">Read Now</a>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            <button class="carousel-btn left" onclick="scrollCarousel('carousel-hindi', -1)">←</button>
+            <button class="carousel-btn right" onclick="scrollCarousel('carousel-hindi', 1)">→</button>
+        </div>
+        {% else %}
+        <p>No Hindi books available at the moment.</p>
+        {% endif %}
+    </section>
+
+    <!-- Popular in Marathi Section -->
+    <section class="best-sellers">
+        <h2>Popular in Marathi</h2>
+        {% set marathi_books = books | selectattr('category', 'equalto', 'marathi') | list %}
+        {% if marathi_books %}
+        <div class="carousel-container">
+            <div class="carousel" id="carousel-marathi">
+                {% for book in marathi_books %}
+                <div class="book-card">
+                    <a href="{{ url_for('book_detail', book_id=book.id) }}" style="text-decoration: none;">
+                        <img src="{{ book.image }}" alt="{{ book.title }}">
+                        <h4>{{ book.title }}</h4>
+                        <p>{{ book.author }}</p>
+                        <div class="rating">
+                            {% for i in range(5) %}
+                                {% if i < book.rating %}★{% else %}☆{% endif %}
+                            {% endfor %} ({{ book.rating_count }})
+                        </div>
+                        <p class="price">₹{{ book.price }}</p>
+                    </a>
+                    {% if book.id in session.get('library', []) %}
+                        <span class="library-badge">In Library</span>
+                    {% endif %}
+                    {% if book.category == 'audiobook' %}
+                        <a href="{{ url_for('book_detail', book_id=book.id) }}" class="play-now-btn">Play Now</a>
+                    {% else %}
+                        <a href="{{ url_for('book_detail', book_id=book.id) }}" class="read-now-btn">Read Now</a>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            <button class="carousel-btn left" onclick="scrollCarousel('carousel-marathi', -1)">←</button>
+            <button class="carousel-btn right" onclick="scrollCarousel('carousel-marathi', 1)">→</button>
+        </div>
+        {% else %}
+        <p>No Marathi books available at the moment.</p>
+        {% endif %}
+    </section>
+
+    <!-- Read the Films or Series Section -->
+    <section class="best-sellers">
+        <h2>Read the Films or Series</h2>
+        {% set films_books = books | selectattr('category', 'equalto', 'films') | list %}
+        {% if films_books %}
+        <div class="carousel-container">
+            <div class="carousel" id="carousel-films">
+                {% for book in films_books %}
+                <div class="book-card">
+                    <a href="{{ url_for('book_detail', book_id=book.id) }}" style="text-decoration: none;">
+                        <img src="{{ book.image }}" alt="{{ book.title }}">
+                        <h4>{{ book.title }}</h4>
+                        <p>{{ book.author }}</p>
+                        <div class="rating">
+                            {% for i in range(5) %}
+                                {% if i < book.rating %}★{% else %}☆{% endif %}
+                            {% endfor %} ({{ book.rating_count }})
+                        </div>
+                        <p class="price">₹{{ book.price }}</p>
+                    </a>
+                    {% if book.id in session.get('library', []) %}
+                        <span class="library-badge">In Library</span>
+                    {% endif %}
+                    {% if book.category == 'audiobook' %}
+                        <a href="{{ url_for('book_detail', book_id=book.id) }}" class="play-now-btn">Play Now</a>
+                    {% else %}
+                        <a href="{{ url_for('book_detail', book_id=book.id) }}" class="read-now-btn">Read Now</a>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            <button class="carousel-btn left" onclick="scrollCarousel('carousel-films', -1)">←</button>
+            <button class="carousel-btn right" onclick="scrollCarousel('carousel-films', 1)">→</button>
+        </div>
+        {% else %}
+        <p>No film or series books available at the moment.</p>
+        {% endif %}
+    </section>
+
+    <!-- eBooks in All Languages Section -->
+    <section class="best-sellers">
+        <h2>eBooks in All Languages</h2>
+        {% set ebooks_books = books | selectattr('category', 'equalto', 'ebooks') | list %}
+        {% if ebooks_books %}
+        <div class="carousel-container">
+            <div class="carousel" id="carousel-ebooks">
+                {% for book in ebooks_books %}
+                <div class="book-card">
+                    <a href="{{ url_for('book_detail', book_id=book.id) }}" style="text-decoration: none;">
+                        <img src="{{ book.image }}" alt="{{ book.title }}">
+                        <h4>{{ book.title }}</h4>
+                        <p>{{ book.author }}</p>
+                        <div class="rating">
+                            {% for i in range(5) %}
+                                {% if i < book.rating %}★{% else %}☆{% endif %}
+                            {% endfor %} ({{ book.rating_count }})
+                        </div>
+                        <p class="price">₹{{ book.price }}</p>
+                    </a>
+                    {% if book.id in session.get('library', []) %}
+                        <span class="library-badge">In Library</span>
+                    {% endif %}
+                    {% if book.category == 'audiobook' %}
+                        <a href="{{ url_for('book_detail', book_id=book.id) }}" class="play-now-btn">Play Now</a>
+                    {% else %}
+                        <a href="{{ url_for('book_detail', book_id=book.id) }}" class="read-now-btn">Read Now</a>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            <button class="carousel-btn left" onclick="scrollCarousel('carousel-ebooks', -1)">←</button>
+            <button class="carousel-btn right" onclick="scrollCarousel('carousel-ebooks', 1)">→</button>
+        </div>
+        {% else %}
+        <p>No eBooks available at the moment.</p>
+        {% endif %}
+    </section>
+
+    <!-- Audiobooks Section -->
+    <section class="best-sellers">
+        <h2>Audiobooks</h2>
+        {% set audiobook_books = books | selectattr('category', 'equalto', 'audiobook') | list %}
+        {% if audiobook_books %}
+        <div class="carousel-container">
+            <div class="carousel" id="carousel-audiobooks">
+                {% for book in audiobook_books %}
+                <div class="book-card">
+                    <a href="{{ url_for('book_detail', book_id=book.id) }}" style="text-decoration: none;">
+                        <img src="{{ book.image }}" alt="{{ book.title }}">
+                        <h4>{{ book.title }}</h4>
+                        <p>{{ book.author }}</p>
+                        <div class="rating">
+                            {% for i in range(5) %}
+                                {% if i < book.rating %}★{% else %}☆{% endif %}
+                            {% endfor %} ({{ book.rating_count }})
+                        </div>
+                        <p class="price">₹{{ book.price }}</p>
+                    </a>
+                    {% if book.id in session.get('library', []) %}
+                        <span class="library-badge">In Library</span>
+                    {% endif %}
+                    <a href="{{ url_for('book_detail', book_id=book.id) }}" class="play-now-btn">Play Now</a>
+                </div>
+                {% endfor %}
+            </div>
+            <button class="carousel-btn left" onclick="scrollCarousel('carousel-audiobooks', -1)">←</button>
+            <button class="carousel-btn right" onclick="scrollCarousel('carousel-audiobooks', 1)">→</button>
+        </div>
+        {% else %}
+        <p>No audiobooks available at the moment.</p>
+        {% endif %}
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Sapatshree Books</h3>
+                <p>Discover a world of reading and listening with our vast collection of eBooks, audiobooks, and more.</p>
+                <p>© 2025 Sapatshree Books. All rights reserved.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Customer Service</h3>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Order Tracking</a></li>
+                    <li><a href="#">Returns</a></li>
+                    <li><a href="#">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Connect With Us</h3>
+                <ul>
+                    <li><a href="#">Facebook</a></li>
+                    <li><a href="#">Twitter</a></li>
+                    <li><a href="#">Instagram</a></li>
+                    <li><a href="#">Email Support</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Carousel, Category Filtering, Search, and Suggestions -->
+    <script>
+        function debounce(func, wait) {
+            let timeout;
+            return function (...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
+        }
+
+        function scrollCarousel(carouselId, direction) {
+            const carousel = document.getElementById(carouselId);
+            const cardWidth = document.querySelector('.book-card')?.offsetWidth + 20 || 200;
+            const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+            let newScrollPosition = carousel.scrollLeft + direction * cardWidth * 3;
+
+            if (newScrollPosition < 0) {
+                newScrollPosition = 0;
+            } else if (newScrollPosition > maxScroll) {
+                newScrollPosition = maxScroll;
+            }
+
+            carousel.scrollTo({
+                left: newScrollPosition,
+                behavior: 'smooth'
+            });
+        }
+
+        function filterCategory(category) {
+            const url = new URL(window.location);
+            url.searchParams.set('category', category);
+            window.history.pushState({}, '', url);
+            window.location.href = `/?category=${encodeURIComponent(category)}`;
+        }
+
+        function performFullSearch() {
+            const searchTerm = document.getElementById('search-bar').value.trim();
+            if (!searchTerm) return;
+
+            const url = new URL(window.location);
+            url.searchParams.set('search', searchTerm);
+            url.searchParams.delete('category');
+            window.history.pushState({}, '', url);
+            window.location.href = `/?search=${encodeURIComponent(searchTerm)}`;
+        }
+
+        const searchBooks = debounce(function () {
+            const searchTerm = document.getElementById('search-bar').value.trim();
+            const suggestionsContainer = document.getElementById('search-suggestions');
+
+            if (!searchTerm) {
+                suggestionsContainer.style.display = 'none';
+                return;
+            }
+
+            fetch(`/search?search=${encodeURIComponent(searchTerm)}&suggestions=true`)
+                .then(response => response.json())
+                .then(data => {
+                    suggestionsContainer.innerHTML = '';
+                    if (data.length > 0) {
+                        suggestionsContainer.style.display = 'block';
+                        data.forEach(book => {
+                            const suggestion = document.createElement('div');
+                            suggestion.className = 'suggestion-item';
+                            suggestion.innerHTML = `
+                                <a href="/book/${book.id}" style="text-decoration: none; color: #333;">
+                                    <div class="suggestion-content">
+                                        <img src="${book.image}" alt="${book.title}" style="width: 50px; height: 70px; object-fit: cover; border-radius: 4px; margin-right: 10px;">
+                                        <div>
+                                            <div class="suggestion-title">${book.title}</div>
+                                            <div class="suggestion-author">by ${book.author}</div>
+                                        </div>
+                                    </div>
+                                </a>
+                            `;
+                            suggestionsContainer.appendChild(suggestion);
+                        });
+                    } else {
+                        suggestionsContainer.style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching search suggestions:', error);
+                    suggestionsContainer.style.display = 'none';
+                });
+        }, 300);
+
+        document.getElementById('search-bar').addEventListener('input', searchBooks);
+        document.getElementById('search-bar').addEventListener('keypress', function (event) {
+            if (event.key === 'Enter') {
+                performFullSearch();
+            }
+        });
+
+        document.addEventListener('click', function (event) {
+            const searchContainer = document.querySelector('.search-container');
+            if (!searchContainer.contains(event.target)) {
+                document.getElementById('search-suggestions').style.display = 'none';
+            }
+        });
+
+        window.addEventListener('popstate', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const category = urlParams.get('category');
+            const searchTerm = urlParams.get('search');
+            if (category) {
+                window.location.href = `/?category=${encodeURIComponent(category)}`;
+            } else if (searchTerm) {
+                window.location.href = `/?search=${encodeURIComponent(searchTerm)}`;
+            } else {
+                window.location.href = '/';
+            }
+        });
+    </script>

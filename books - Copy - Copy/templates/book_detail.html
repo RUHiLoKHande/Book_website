@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ book.title }} - Sapatshree Books</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            padding-top: 60px;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+            padding: 10px 20px;
+            border-bottom: 1px solid #ccc;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .logo {
+            color: darkred;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .logo span {
+            font-weight: normal;
+            color: black;
+        }
+
+        .search-bar {
+            width: 400px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-right: none;
+            border-radius: 4px 0 0 4px;
+            outline: none;
+        }
+
+        .search-btn {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-left: none;
+            background-color: #eee;
+            cursor: pointer;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .navbar-right a,
+        .navbar-right span {
+            margin-left: 15px;
+            text-decoration: none;
+            color: #000;
+        }
+
+        .btn-create {
+            background-color: darkred;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            margin-left: 15px;
+        }
+
+        .sign-in {
+            color: darkred;
+            text-decoration: underline;
+            margin-left: 5px;
+        }
+
+        .search-suggestions {
+            position: absolute;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-top: none;
+            width: 416px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 10;
+            display: none;
+        }
+
+        .suggestion-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .suggestion-item:hover {
+            background-color: #f5f5f5;
+        }
+
+        .suggestion-item strong {
+            color: darkred;
+            font-weight: bold;
+        }
+
+        .search-bar:focus + .search-suggestions,
+        .search-suggestions:hover {
+            display: block;
+        }
+
+        .book-detail {
+            padding: 40px 60px;
+            max-width: 1200px;
+            margin: 30px auto;
+        }
+
+        .book-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 6px;
+        }
+
+        .book-image-details {
+            margin-top: 10px;
+            text-align: left;
+        }
+
+        .book-image-details p.author {
+            font-size: 1.1rem;
+            color: #333;
+            margin: 0 0 10px 0;
+        }
+
+        .book-image-details .rating {
+            font-size: 1rem;
+            color: #000;
+            margin: 10px 0;
+        }
+
+        .book-image-details .price {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: darkgreen;
+            margin: 10px 0;
+        }
+
+        .book-image-details .language {
+            font-size: 1rem;
+            color: #333;
+            margin: 10px 0;
+        }
+
+        .book-content {
+            flex: 2;
+            min-width: 300px;
+        }
+
+        .book-content h2 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .book-content .rating {
+            font-size: 1rem;
+            color: #000;
+            margin: 10px 0;
+        }
+
+        .book-content .price {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: darkgreen;
+        }
+
+        .read-now-btn,
+        .play-now-btn,
+        .add-to-library-btn,
+        .remove-from-library-btn {
+            display: inline-block;
+            padding: 12px 20px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 3px;
+            transition: background 0.3s ease, transform 0.2s ease;
+            margin-right: 10px;
+        }
+
+        .read-now-btn {
+            background-color: darkred;
+            color: #fff;
+        }
+
+        .read-now-btn:hover {
+            background-color: #a30000;
+            transform: scale(1.05);
+        }
+
+        .play-now-btn {
+            background-color: #0066cc;
+            color: #fff;
+        }
+
+        .play-now-btn:hover {
+            background-color: #004c99;
+            transform: scale(1.05);
+        }
+
+        .add-to-library-btn {
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .add-to-library-btn:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+
+        .add-to-library-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .remove-from-library-btn {
+            background-color: #e53935;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .remove-from-library-btn:hover {
+            background-color: #c62828;
+            transform: scale(1.05);
+        }
+
+        .remove-from-library-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .recommended-books {
+            padding: 40px 60px;
+            background-color: #fff;
+            max-width: 1200px;
+            margin: 30px auto;
+        }
+
+        .recommended-books h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .carousel-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .carousel {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            padding-bottom: 10px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .carousel::-webkit-scrollbar {
+            display: none;
+        }
+
+        .book-card {
+            min-width: 180px;
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+            text-align: center;
+            flex-shrink: 0;
+            transition: transform 0.2s ease;
+        }
+
+        .book-card:hover {
+            transform: scale(1.05);
+        }
+
+        .book-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .book-card h4 {
+            font-size: 16px;
+            margin: 8px 0 4px;
+        }
+
+        .book-card p {
+            margin: 0;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .book-card .rating {
+            color: #000;
+            font-size: 13px;
+            margin: 6px 0;
+        }
+
+        .book-card .price {
+            font-weight: bold;
+            font-size: 15px;
+            color: darkgreen;
+        }
+
+        .book-card .read-now-btn,
+        .book-card .play-now-btn {
+            display: inline-block;
+            padding: 8px 12px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 3px;
+            margin-top: 8px;
+            transition: background 0.3s ease;
+        }
+
+        .book-card .read-now-btn {
+            background-color: darkred;
+            color: #fff;
+        }
+
+        .book-card .read-now-btn:hover {
+            background-color: #a30000;
+        }
+
+        .book-card .play-now-btn {
+            background-color: #0066cc;
+            color: #fff;
+        }
+
+        .book-card .play-now-btn:hover {
+            background-color: #004c99;
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #333;
+            font-size: 2.5rem;
+            cursor: pointer;
+            z-index: 2;
+            padding: 0 10px;
+            transition: opacity 0.3s ease;
+            opacity: 0.3;
+        }
+
+        .carousel-btn.left {
+            left: 0;
+        }
+
+        .carousel-btn.right {
+            right: 0;
+        }
+
+        .carousel-btn:hover {
+            opacity: 1;
+            color: darkred;
+        }
+
+        .footer {
+            background-color: #f9f9f9;
+            border-top: 1px solid #ddd;
+            padding: 20px 0;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 60px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 40px;
+        }
+
+        .footer-section h3 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: #111;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section ul li a {
+            text-decoration: none;
+            color: #333;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section ul li a:hover {
+            color: darkred;
+        }
+
+        @media screen and (max-width: 768px) {
+            .book-detail {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .book-image-details {
+                text-align: center;
+            }
+
+            .book-content {
+                margin-top: 20px;
+            }
+
+            .navbar {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .navbar-center {
+                display: flex;
+                justify-content: center;
+                margin: 10px 0;
+                position: relative;
+            }
+
+            .search-bar {
+                width: 80%;
+            }
+
+            .search-suggestions {
+                width: calc(80% + 16px);
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-section {
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-left">
+            <h1 class="logo">Sapatshree <span>Books</span></h1>
+        </div>
+        <div class="navbar-center">
+            <div class="search-container">
+                <input type="text" id="search-bar" placeholder="Search on Sapatshree Books..." class="search-bar" autocomplete="off">
+                <button class="search-btn" onclick="performFullSearch()">🔍</button>
+                <div id="search-suggestions" class="search-suggestions"></div>
+            </div>
+        </div>
+        <div class="navbar-right">
+            <a href="#">Wishlist</a>
+            <a href="/my_library">My Library</a>
+            <button class="btn-create">Create account</button>
+            <span>Have an account? <a href="#" class="sign-in">Sign in</a></span>
+        </div>
+    </header>
+
+    <section class="book-detail" style="padding: 40px 60px; max-width: 1200px; margin: 30px auto;">
+        <div style="display: flex; flex-wrap: wrap; gap: 40px;">
+            <div class="book-image" style="flex: 1; min-width: 300px;">
+                <img src="{{ book.image }}" alt="{{ book.title }}">
+                <div class="book-image-details">
+                    <p class="author">by {{ book.author }}</p>
+                    <div class="rating">
+                        {% for i in range(5) %}
+                            {% if i < book.rating %}★{% else %}☆{% endif %}
+                        {% endfor %} ({{ book.rating_count }} reviews)
+                    </div>
+                    <p class="price">₹{{ book.price }}</p>
+                    <p class="language">Language: {{ book.language | default('Not specified') }}</p>
+                </div>
+            </div>
+            <div class="book-content" style="flex: 2; min-width: 300px;">
+                <h2>{{ book.title }}</h2>
+                <p style="font-size: 1.1rem; color: #333;">by {{ book.author }}</p>
+                <div class="rating" style="font-size: 1rem; color: #000; margin: 10px 0;">
+                    {% for i in range(5) %}
+                        {% if i < book.rating %}★{% else %}☆{% endif %}
+                    {% endfor %} ({{ book.rating_count }} reviews)
+                </div>
+                <p class="price" style="font-size: 1.2rem; font-weight: bold; color: darkgreen;">₹{{ book.price }}</p>
+                <p style="font-size: 1rem; color: #333; margin: 20px 0;">{{ book.description }}</p>
+                {% if book.category == 'audiobook' %}
+                    <a href="#" class="play-now-btn">Play Now</a>
+                {% else %}
+                    <a href="#" class="read-now-btn">Read Now</a>
+                {% endif %}
+                {% if is_in_library %}
+                    <button class="remove-from-library-btn" onclick="removeFromLibrary({{ book.id }})">Remove from Library</button>
+                {% else %}
+                    <button class="add-to-library-btn" onclick="addToLibrary({{ book.id }})">Add to My Library</button>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <section class="recommended-books" style="padding: 40px 60px; background-color: #fff; max-width: 1200px; margin: 30px auto;">
+        <h2>Recommended Books</h2>
+        <div class="carousel-container">
+            <div class="carousel" id="carousel-recommended">
+                {% for book in recommended_books %}
+                <div class="book-card">
+                    <a href="{{ url_for('book_detail', book_id=book.id) }}" style="text-decoration: none;">
+                        <img src="{{ book.image }}" alt="{{ book.title }}">
+                        <h4>{{ book.title }}</h4>
+                        <p>{{ book.author }}</p>
+                        <div class="rating">{% for i in range(5) %}{% if i < book.rating %}★{% else %}☆{% endif %}{% endfor %} ({{ book.rating_count }})</div>
+                        <p class="price">₹{{ book.price }}</p>
+                    </a>
+                    {% if book.category == 'audiobook' %}
+                        <a href="{{ url_for('book_detail', book_id=book.id) }}" class="play-now-btn">Play Now</a>
+                    {% else %}
+                        <a href="{{ url_for('book_detail', book_id=book.id) }}" class="read-now-btn">Read Now</a>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                {% if not recommended_books %}
+                    <p>No recommended books available at the moment.</p>
+                {% endif %}
+            </div>
+            {% if recommended_books %}
+                <button class="carousel-btn left" onclick="scrollCarousel('carousel-recommended', -1)">←</button>
+                <button class="carousel-btn right" onclick="scrollCarousel('carousel-recommended', 1)">→</button>
+            {% endif %}
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Sapatshree Books</h3>
+                <p>Discover a world of reading and listening with our vast collection of eBooks, audiobooks, and more.</p>
+                <p>© 2025 Sapatshree Books. All rights reserved.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Customer Service</h3>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Order Tracking</a></li>
+                    <li><a href="#">Returns</a></li>
+                    <li><a href="#">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Connect With Us</h3>
+                <ul>
+                    <li><a href="#">Facebook</a></li>
+                    <li><a href="#">Twitter</a></li>
+                    <li><a href="#">Instagram</a></li>
+                    <li><a href="#">Email Support</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function debounce(func, wait) {
+            let timeout;
+            return function (...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
+        }
+
+        const searchBooks = debounce(function () {
+            const searchTerm = document.getElementById('search-bar').value.trim();
+            const suggestionsContainer = document.getElementById('search-suggestions');
+
+            if (!searchTerm) {
+                suggestionsContainer.style.display = 'none';
+                return;
+            }
+
+            fetch(`/search?search=${encodeURIComponent(searchTerm)}&suggestions=true`)
+                .then(response => response.json())
+                .then(data => {
+                    suggestionsContainer.innerHTML = '';
+                    if (data.length > 0) {
+                        suggestionsContainer.style.display = 'block';
+                        data.forEach(book => {
+                            const suggestion = document.createElement('div');
+                            suggestion.className = 'suggestion-item';
+                            suggestion.innerHTML = `
+                                <a href="/book/${book.id}" style="text-decoration: none; color: #333;">
+                                    <div class="suggestion-content">
+                                        <img src="${book.image}" alt="${book.title}" style="width: 50px; height: 70px; object-fit: cover; border-radius: 4px; margin-right: 10px;">
+                                        <div>
+                                            <div class="suggestion-title">${book.title}</div>
+                                            <div class="suggestion-author">by ${book.author}</div>
+                                        </div>
+                                    </div>
+                                </a>
+                            `;
+                            suggestionsContainer.appendChild(suggestion);
+                        });
+                    } else {
+                        suggestionsContainer.style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching search suggestions:', error);
+                    suggestionsContainer.style.display = 'none';
+                });
+        }, 300);
+
+        function performFullSearch() {
+            const searchTerm = document.getElementById('search-bar').value.trim();
+            if (!searchTerm) return;
+
+            window.location.href = `/?search=${encodeURIComponent(searchTerm)}`;
+        }
+
+        function addToLibrary(bookId) {
+            fetch(`/add_to_library/${bookId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    const addBtn = document.querySelector('.add-to-library-btn');
+                    addBtn.classList.remove('add-to-library-btn');
+                    addBtn.classList.add('remove-from-library-btn');
+                    addBtn.textContent = 'Remove from Library';
+                    addBtn.onclick = () => removeFromLibrary(bookId);
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error adding to library:', error);
+                alert('An error occurred while adding the book to your library.');
+            });
+        }
+
+        function removeFromLibrary(bookId) {
+            fetch(`/remove_from_library/${bookId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    const removeBtn = document.querySelector('.remove-from-library-btn');
+                    removeBtn.classList.remove('remove-from-library-btn');
+                    removeBtn.classList.add('add-to-library-btn');
+                    removeBtn.textContent = 'Add to My Library';
+                    removeBtn.onclick = () => addToLibrary(bookId);
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error removing from library:', error);
+                alert('An error occurred while removing the book from your library.');
+            });
+        }
+
+        document.getElementById('search-bar').addEventListener('input', searchBooks);
+        document.getElementById('search-bar').addEventListener('keypress', function (event) {
+            if (event.key === 'Enter') {
+                performFullSearch();
+            }
+        });
+
+        document.addEventListener('click', function (event) {
+            const searchContainer = document.querySelector('.search-container');
+            if (!searchContainer.contains(event.target)) {
+                document.getElementById('search-suggestions').style.display = 'none';
+            }
+        });
+
+        function scrollCarousel(carouselId, direction) {
+            const carousel = document.getElementById(carouselId);
+            const cardWidth = document.querySelector('.book-card')?.offsetWidth + 20 || 200;
+            const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+            let newScrollPosition = carousel.scrollLeft + direction * cardWidth * 3;
+
+            if (newScrollPosition < 0) {
+                newScrollPosition = 0;
+            } else if (newScrollPosition > maxScroll) {
+                newScrollPosition = maxScroll;
+            }
+
+            carousel.scrollTo({
+                left: newScrollPosition,
+                behavior: 'smooth'
+            });
+        }
+    </script>
+</body>
+</html>
